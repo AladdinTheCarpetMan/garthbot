@@ -1,4 +1,16 @@
-    const Discord = require("discord.js");
+const http = require("http")
+const express = require("express");
+const app = express();
+app.get("/", (request, response) => {
+  console.log(Date.now() + " Ping Received");
+  response.sendStatus(200);
+});
+app.listen(process.env.PORT);
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
+
+const Discord = require("discord.js");
 
 var bot = new Discord.Client();
 
@@ -8,7 +20,7 @@ const token = config.token
 
 const prefix = config.prefix
 
-bot.on("ready", async () => {
+bot.on("ready",() => {
    console.log("Ready");
 
 bot.generateInvite(["ADMINISTRATOR"]).then(link => {
@@ -17,16 +29,16 @@ bot.generateInvite(["ADMINISTRATOR"]).then(link => {
     console.log(err.stack); 
 });
 
-await bot.on("guildDelete" , guild=>{
+bot.on("guildDelete" , guild=>{
    console.log(`I have left ${guild.name} at ${new Date()}`);
 });
 
-await bot.on("guildCreate" , guild => {
+bot.on("guildCreate" , guild => {
 	console.log(`I have joined ${guild.name} at ${new Date()}`);
     guild.channels.find("name", "general").send(`I have joined ${guild.name} at ${new Date()}`);
 });
 
-await bot.generateInvite("[ADMINISTRATOR]");
+bot.generateInvite("[ADMINISTRATOR]");
 console.log("Here's an invite for ya!");
 });
 
@@ -68,4 +80,4 @@ bot.on("message", message => {
     
 });
 
-bot.login(token);
+bot.login(process.env.TOKEN)
